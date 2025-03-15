@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Noticias Recientes</title>
+    <!-- Importar Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #6d6d6d; /* Color de fondo más suave */
+        }
+        .navbar {
+            background-color: #212529; /* Color oscuro para la barra de navegación */
+            padding: 10px 0;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: inline-block;
+        }
+        .navbar a.active {
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .news-card {
+            border: 1px solid #ddd;
+            height: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+            background: white;
+        }
+        .news-card:hover {
+            transform: scale(1.03);
+        }
+        .news-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .news-content {
+            padding: 15px;
+        }
+        .news-content h5 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .news-content p {
+            font-size: 14px;
+            color: #555;
+        }
+        .category-header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+            color: white;
+        }
+        .header-title {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            color: white;
+        }
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de navegación con categorías -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a href="{{ url_for('index', category='Todos', page=1) }}" class="{% if selected_category == 'Todos' or not selected_category %}active{% endif %}">Todas</a>
+            <a href="{{ url_for('index', category='General', page=1) }}" class="{% if selected_category == 'General' %}active{% endif %}">General</a>
+            <a href="{{ url_for('index', category='Política', page=1) }}" class="{% if selected_category == 'Política' %}active{% endif %}">Política</a>
+            <a href="{{ url_for('index', category='Economía', page=1) }}" class="{% if selected_category == 'Economía' %}active{% endif %}">Economía</a>
+            <a href="{{ url_for('index', category='Deportes', page=1) }}" class="{% if selected_category == 'Deportes' %}active{% endif %}">Deportes</a>
+            <a href="{{ url_for('index', category='Tecnología', page=1) }}" class="{% if selected_category == 'Tecnología' %}active{% endif %}">Tecnología</a>
+            <a href="{{ url_for('index', category='Opinión', page=1) }}" class="{% if selected_category == 'Opinión' %}active{% endif %}">Opinión</a>
+        </div>
+    </nav>
+
+    <!-- Encabezado principal -->
+    <div class="container">
+        <h1 class="header-title">Noticias Recientes</h1>
+
+        {% if paginated_news %}
+            <div class="category-header">{{ selected_category }}</div>
+            <div class="row">
+                {% for noticia in paginated_news %}
+                    <div class="col-md-4 mb-4">
+                        <div class="news-card">
+                            <img src="{{ noticia.image }}" alt="Imagen de la noticia" loading="lazy">
+                            <div class="news-content">
+                                <h5>{{ noticia.title }}</h5>
+                                <p><small>{{ noticia.published }}</small></p>
+                                <p>{{ noticia.description[:100] }}...</p>
+                                <a href="{{ noticia.link }}" class="btn btn-primary btn-sm" target="_blank">Leer más</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Paginación -->
+            <nav>
+                <ul class="pagination">
+                    {% if current_page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('index', category=selected_category, page=current_page-1) }}">Anterior</a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in range(1, total_pages + 1) %}
+                        <li class="page-item {% if num == current_page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('index', category=selected_category, page=num) }}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+
+                    {% if current_page < total_pages %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('index', category=selected_category, page=current_page+1) }}">Siguiente</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% else %}
+            <p class="text-center text-white">No hay noticias disponibles en esta categoría.</p>
+        {% endif %}
+    </div>
+
+    <!-- Importar Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
