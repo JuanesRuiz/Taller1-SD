@@ -1,4 +1,4 @@
-# 📌 Documentación de Librerías Usadas en el Proyecto
+#  Documentación de Librerías Usadas en el Proyecto
 
 Esta es una lista de las librerías utilizadas en el proyecto, junto con una breve descripción de su propósito.
 
